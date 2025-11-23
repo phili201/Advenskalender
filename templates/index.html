@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Adventskalender – Tägliche Frage</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register("/static/service-worker.js")
+            .then(() => console.log("Service Worker registered"))
+            .catch((error) => console.error("Service Worker registration failed:", error));
+        }
+    </script>
+</head>
+
+<body>
+
+    <h1>Adventskalender 🎄</h1>
+
+    <div class="calendar-grid">
+    {% set today_day = now.day %}
+    {% for i in range(1, 25) %}
+        <div class="
+            day
+            {% if i < today_day %} past
+            {% elif i == today_day %} today
+            {% else %} future
+            {% endif %}
+        " onclick="openDay({{ i }})">
+            {{ i }}
+        </div>
+    {% endfor %}
+</div>
+
+
+
+    {% if question %}
+        <h2>Heutige Frage</h2>
+        <form method="post" style="display:none">
+            <p>{{ question }}</p>
+            <input type="text" name="answer" placeholder="Deine Antwort eingeben" required>
+            <button type="submit" class="submit-btn">Antwort senden</button>
+        </form>
+    {% elif selected_day %}
+        <h2>Für diesen Tag gibt es (noch) kein Rätsel.</h2>
+    {% else %}
+        <p>Wähle ein Türchen aus dem Adventskalender.</p>
+    {% endif %}
+
+    {% if Feedback %}
+        <p>{{ Feedback }}</p>
+    {% endif %}
+
+    <h3>Dein Fortschritt</h3>
+
+    <div class="solution-grid">
+        {% for letter in letters_full %}
+            {% if letter %}
+                <div class="solution-box filled">{{ letter }}</div>
+            {% else %}
+                <div class="solution-box empty">?</div>
+            {% endif %}
+        {% endfor %}
+</div>
+
+    {% if loesungswort %}
+        <h3>Lösungswort:</h3>
+        <p>{{ loesungswort }}</p>
+    {% endif %}
+
+
+    <script>
+        function createSnow() {
+            const snow = document.createElement("div");
+            snow.classList.add("snowflake");
+            snow.textContent = "❄";
+
+            snow.style.left = Math.random() * window.innerWidth + "px";
+            snow.style.animationDuration = (3 + Math.random() * 5) + "s";
+            snow.style.fontSize = (10 + Math.random() * 20) + "px";
+
+            document.body.appendChild(snow);
+            setTimeout(() => snow.remove(), 8000);
+        }
+        setInterval(createSnow, 200);
+
+        function openDay(day) {
+
+            let today = new Date().getDate();
+
+            if (day === today) {
+                document.querySelector('form').style.display = 'block';
+                window.scrollTo({ 
+                    top: document.querySelector('form').offsetTop, 
+                    behavior: 'smooth' 
+                });
+            } else {
+                alert(
+                    TESTMODE
+                    ? "Testmodus aktiv: Du testest den " + today + ".12"
+                    : "Du kannst nur das heutige Türchen öffnen!"
+                );
+            }
+        }
+
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <h1>Login</h1>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        {% if message %}
+        <p>{{ message }}</p>
+        {% endif %}
+
+        <form method="post">
+            <label>Username:</label>
+            <input type="text" name="username" placeholder="Bitte gib dein Username ein" required>
+            <label>Passwort</label>
+            <input type="password" name="password" placeholder="Bitte gib dein Passwort ein" required>
+            <button type="submit">Einloggen</button>
+        </form>
+    </body>
+</html>
